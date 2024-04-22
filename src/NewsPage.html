@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Server-Sent Events Showcase</title>
+</head>
+<body>
+    <p><label id="labelInformation">Waiting for new messages...</label></p>
+    <p><label id="labelTitle"></label></p>
+    <p><label id="labelDate"></label></p>
+    <script>
+
+        if (typeof (EventSource) === undefined) {
+            document.getElementById("labelInformation").innerText = "Sorry, no Server-Sent events support.";
+        }
+        else {
+            checkForEvents();
+        }
+
+        function checkForEvents() {
+
+            try {
+
+                const eventSource = new EventSource('https://localhost:59700/api/v1/news');
+
+                eventSource.onmessage = function (event) {
+
+                    const message = JSON.parse(event.data);
+
+                    document.getElementById("labelInformation").style.display = 'none';
+                    document.getElementById("labelTitle").innerText = message.Title;
+                    document.getElementById("labelDate").innerText = message.Date;
+                };
+
+                eventSource.onerror = function (exception) {
+                    handleException(exception)
+                };
+
+            } catch (exception) {
+
+                handleException(exception);
+            }
+        };
+
+        function handleException(exception) {
+
+            console.log('Error', exception);
+            document.getElementById("labelInformation").innerText = "Trying to reconnect...";
+        }
+    </script>
+</body>
+</html>

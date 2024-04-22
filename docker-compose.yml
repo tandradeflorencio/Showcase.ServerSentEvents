@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  showcase.serversentevents:
+    image: ${DOCKER_REGISTRY-}showcaseserversentevents
+    build:
+      context: src
+      dockerfile: Dockerfile
